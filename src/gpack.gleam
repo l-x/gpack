@@ -1,10 +1,6 @@
-import gleam/bit_array
 import gleam/dynamic.{type Dynamic}
 import gleam/io
-import gleam/pair
-import gleam/result
-import gpack/bytes
-import gpack/error.{type Error, InvalidMessage}
+import gpack/error.{type Error}
 import gpack/t_bool
 import gpack/t_float
 import gpack/t_int
@@ -23,7 +19,7 @@ fn try_decode(
   }
 }
 
-pub fn decode(message: BitArray) -> Result(#(Dynamic, BitArray), Error) {
+pub fn decode_one(message: BitArray) -> Result(#(Dynamic, BitArray), Error) {
   use <- try_decode(message, with: t_nil.decode)
   use <- try_decode(message, with: t_bool.decode)
   use <- try_decode(message, with: t_int.decode)
@@ -37,6 +33,6 @@ pub fn main() {
   let msg = <<0xDA, 0x03, "abc":utf8>>
 
   msg
-  |> decode
+  |> decode_one
   |> io.debug
 }
