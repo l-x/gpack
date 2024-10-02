@@ -13,20 +13,20 @@ pub fn decode_test() {
   |> should.be_ok
   |> should.equal(#(False, <<>>))
 
-  <<0xC2, 0xFF, 0xFF>>
+  <<0xC2, 0xFF, 0xFE>>
   |> subject.decode
   |> should.be_ok
-  |> should.equal(#(False, <<0xFF, 0xFF>>))
+  |> should.equal(#(False, <<0xFF, 0xFE>>))
 
   <<0xC3>>
   |> subject.decode
   |> should.be_ok
   |> should.equal(#(True, <<>>))
 
-  <<0xC3, 0xFF, 0xFF>>
+  <<0xC3, 0xFF, 0xFE>>
   |> subject.decode
   |> should.be_ok
-  |> should.equal(#(True, <<0xFF, 0xFF>>))
+  |> should.equal(#(True, <<0xFF, 0xFE>>))
 
   <<0xFF>>
   |> subject.decode
