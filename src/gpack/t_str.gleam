@@ -7,11 +7,11 @@ pub fn decode(message: BitArray) -> Result(#(String, BitArray), Error) {
   case message {
     <<x, xs:bytes>> if x >= 0xA0 && x <= 0xBF -> {
       let size = x - 0xA0
-      read(<<size, xs:bits>>, bytes.int8)
+      read(<<size, xs:bits>>, bytes.uint8)
     }
-    <<0xD9, xs:bytes>> -> read(xs, bytes.int8)
-    <<0xDA, xs:bytes>> -> read(xs, bytes.int16)
-    <<0xDB, xs:bytes>> -> read(xs, bytes.int32)
+    <<0xD9, xs:bytes>> -> read(xs, bytes.uint8)
+    <<0xDA, xs:bytes>> -> read(xs, bytes.uint16)
+    <<0xDB, xs:bytes>> -> read(xs, bytes.uint32)
     _ -> Error(InvalidType)
   }
 }
