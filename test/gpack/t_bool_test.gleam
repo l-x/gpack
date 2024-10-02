@@ -11,7 +11,7 @@ fn should_decode_to(message: BitArray, value: Bool) -> Nil {
   message
   |> subject.decode
   |> should.be_ok
-  |> should.equal(value)
+  |> should.equal(#(value, <<>>))
 }
 
 pub fn decode_invalid_test() {

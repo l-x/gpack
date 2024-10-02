@@ -1,18 +1,20 @@
+import gpack/bytes
 import gpack/error.{type Error, InvalidType}
 
-pub fn decode(message: BitArray) -> Result(Int, Error) {
+pub fn decode(message: BitArray) -> Result(#(Int, BitArray), Error) {
   case message {
-    <<x, _:bits>> if x <= 0x7F -> Ok(x)
-    <<x, _:bits>> if x >= 0xE0 -> Ok(x - 0x0100)
+    <<x, xs:bytes>> if x <= 0x7F -> Ok(#(x, xs))
+    <<x, xs:bytes>> if x >= 0xE0 -> Ok(#(x - 0x0100, xs))
 
-    <<0xCC, x:unsigned-big-size(8), _:bits>>
-    | <<0xCD, x:unsigned-big-size(16), _:bits>>
-    | <<0xCE, x:unsigned-big-size(32), _:bits>>
-    | <<0xCF, x:unsigned-big-size(64), _:bits>>
-    | <<0xD0, x:signed-big-size(8), _:bits>>
-    | <<0xD1, x:signed-big-size(16), _:bits>>
-    | <<0xD2, x:signed-big-size(32), _:bits>>
-    | <<0xD3, x:signed-big-size(64), _:bits>> -> Ok(x)
+    <<0xCC, xs:bytes>> -> xs |> bytes.uint8
+    <<0xCD, xs:bytes>> -> xs |> bytes.uint16
+    <<0xCE, xs:bytes>> -> xs |> bytes.uint32
+    <<0xCF, xs:bytes>> -> xs |> bytes.uint64
+
+    <<0xD0, xs:bytes>> -> xs |> bytes.int8
+    <<0xD1, xs:bytes>> -> xs |> bytes.int16
+    <<0xD2, xs:bytes>> -> xs |> bytes.int32
+    <<0xD3, xs:bytes>> -> xs |> bytes.int64
 
     _ -> Error(InvalidType)
   }

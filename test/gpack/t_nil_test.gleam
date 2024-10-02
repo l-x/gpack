@@ -18,5 +18,5 @@ pub fn decode_test() {
   <<0xC0>>
   |> subject.decode
   |> should.be_ok
-  |> should.equal(Nil)
+  |> should.equal(#(Nil, <<>>))
 }

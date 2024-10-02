@@ -1,31 +1,42 @@
+import gleam/bit_array
 import gleam/dynamic.{type Dynamic}
 import gleam/io
+import gleam/pair
+import gleam/result
+import gpack/bytes
 import gpack/error.{type Error, InvalidMessage}
 import gpack/t_bool
 import gpack/t_float
 import gpack/t_int
 import gpack/t_nil
+import gpack/t_str
 
 fn try_decode(
-  decoder: fn(BitArray) -> Result(a, Error),
   message: BitArray,
-  otherwise: fn() -> Result(Dynamic, Error),
-) -> Result(Dynamic, Error) {
+  with decoder: fn(BitArray) -> Result(#(a, BitArray), Error),
+  otherwise fun: fn() -> Result(#(Dynamic, BitArray), Error),
+) -> Result(#(Dynamic, BitArray), Error) {
   case decoder(message) {
-    Error(_) -> otherwise()
-    Ok(x) -> Ok(dynamic.from(x))
+    Error(error.InvalidType) -> fun()
+    Error(err) -> Error(err)
+    Ok(#(x, xs)) -> Ok(#(dynamic.from(x), xs))
   }
 }
 
-pub fn decode(message: BitArray) -> Result(Dynamic, Error) {
-  use <- try_decode(t_nil.decode, message)
-  use <- try_decode(t_bool.decode, message)
-  use <- try_decode(t_int.decode, message)
-  use <- try_decode(t_float.decode, message)
+pub fn decode(message: BitArray) -> Result(#(Dynamic, BitArray), Error) {
+  use <- try_decode(message, with: t_nil.decode)
+  use <- try_decode(message, with: t_bool.decode)
+  use <- try_decode(message, with: t_int.decode)
+  use <- try_decode(message, with: t_float.decode)
+  use <- try_decode(message, with: t_str.decode)
 
-  Error(InvalidMessage)
+  Error(error.UnknownType)
 }
 
 pub fn main() {
-  <<123.456:float>> |> io.debug
+  let msg = <<0xDA, 0x03, "abc":utf8>>
+
+  msg
+  |> decode
+  |> io.debug
 }

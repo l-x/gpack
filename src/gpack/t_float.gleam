@@ -1,10 +1,10 @@
+import gpack/bytes
 import gpack/error.{type Error, InvalidType}
 
-pub fn decode(message: BitArray) -> Result(Float, Error) {
+pub fn decode(message: BitArray) -> Result(#(Float, BitArray), Error) {
   case message {
-    <<0xCA, x:float-big-size(32), _:bits>>
-    | <<0xCB, x:float-big-size(64), _:bits>> -> Ok(x)
-
+    <<0xCA, xs:bytes>> -> xs |> bytes.float32
+    <<0xCB, xs:bytes>> -> xs |> bytes.float64
     _ -> Error(InvalidType)
   }
 }
