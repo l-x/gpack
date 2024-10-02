@@ -7,6 +7,13 @@ pub fn main() {
   gleeunit.main()
 }
 
+fn should_decode_to(message: BitArray, value: Bool) -> Nil {
+  message
+  |> subject.decode
+  |> should.be_ok
+  |> should.equal(value)
+}
+
 pub fn decode_invalid_test() {
   <<0xC1>>
   |> subject.decode
@@ -15,13 +22,6 @@ pub fn decode_invalid_test() {
 }
 
 pub fn decode_test() {
-  <<0xC2>>
-  |> subject.decode
-  |> should.be_ok
-  |> should.equal(False)
-
-  <<0xC3>>
-  |> subject.decode
-  |> should.be_ok
-  |> should.equal(True)
+  <<0xC2>> |> should_decode_to(False)
+  <<0xC3>> |> should_decode_to(True)
 }
