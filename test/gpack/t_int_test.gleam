@@ -7,26 +7,33 @@ pub fn main() {
   gleeunit.main()
 }
 
+pub fn decode_invalid_test() {
+  <<0xC1>>
+  |> subject.decode
+  |> should.be_error
+  |> should.equal(InvalidType)
+}
+
 pub fn decode_positive_fixint_test() {
   <<0x00>>
   |> subject.decode
   |> should.be_ok
-  |> should.equal(#(0, <<>>))
+  |> should.equal(0)
 
   <<0x7f>>
   |> subject.decode
   |> should.be_ok
-  |> should.equal(#(127, <<>>))
+  |> should.equal(127)
 }
 
 pub fn decode_negative_fixint_test() {
   <<0xE0>>
   |> subject.decode
   |> should.be_ok
-  |> should.equal(#(-32, <<>>))
+  |> should.equal(-32)
 
   <<0xFF>>
   |> subject.decode
   |> should.be_ok
-  |> should.equal(#(-1, <<>>))
+  |> should.equal(-1)
 }
