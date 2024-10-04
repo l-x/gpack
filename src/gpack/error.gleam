@@ -1,7 +1,10 @@
+import gleam/dynamic
+
 pub type Error {
   UnknownType
   InvalidType
   InvalidMessage
-  UnexpectedEndOfData(Int, Int)
+  UnexpectedEndOfData
   InvalidData
+  DecodeErrors(List(dynamic.DecodeError))
 }

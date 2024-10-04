@@ -1,3 +1,5 @@
+Under active development, DO NOT USE!
+
 # gpack
 
 [![Package Version](https://img.shields.io/hexpm/v/gpack)](https://hex.pm/packages/gpack)
